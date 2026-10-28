@@ -180,6 +180,9 @@ def _es_pregunta_de_seguimiento(consulta: str) -> bool:
     pistas = (
         "ese envio", "este envio", "el envio", "ese paquete", "el mismo", "ese caso",
         "y ahora", "que hago ahora", "y entonces", "y si ", "el cliente", "sobre ese",
+        "reintento", "reintentos", "cuantos intentos", "siguiente paso", "que sigue",
+        "que corresponde", "que le digo", "corresponde compensacion",
+        "y la compensacion", "compensacion para este envio", "explicame el caso",
     )
     return any(pista in normalizada for pista in pistas)
 
@@ -200,10 +203,13 @@ def responder(consulta: str, session_id: str | None = None) -> ResultadoAgente:
     consulta = (consulta or "").strip()
     codigo = detectar_codigo(consulta)
     contexto = obtener_contexto_sesion(session_id) if session_id else {"turnos": [], "codigo_activo": None}
-    if not codigo and contexto.get("codigo_activo") and _es_pregunta_de_seguimiento(consulta):
+    es_seguimiento = _es_pregunta_de_seguimiento(consulta)
+    codigo_activo = contexto.get("codigo_activo")
+    if not codigo and codigo_activo and es_seguimiento:
         codigo = contexto["codigo_activo"]
     consulta_prompt = consulta
-    if contexto.get("turnos"):
+    contexto_relevante = es_seguimiento or (codigo and codigo == codigo_activo)
+    if contexto.get("turnos") and contexto_relevante:
         resumen_turnos = "\n".join(
             f"{turno['rol']}: {turno['contenido'][:900]}"
             for turno in contexto["turnos"][-6:]
@@ -252,6 +258,20 @@ def responder(consulta: str, session_id: str | None = None) -> ResultadoAgente:
                 f"[F{numero}] {fragmento.referencia}"
                 for numero, fragmento in enumerate(resultado.fragmentos, start=1)
             ],
+        )
+        plan = resultado.plan
+        resultado.prompt_usuario += (
+            "\n\nPLAN OPERATIVO DETERMINISTA (no lo reemplaces ni afirmes que ya se ejecutó):\n"
+            f"- Acción propuesta: {plan.accion}\n"
+            f"- Prioridad: {plan.prioridad}\n"
+            f"- Responsable: {plan.responsable}\n"
+            f"- Estado al registrar: {plan.estado_sugerido}\n"
+            f"- Requiere aprobación: {plan.requiere_aprobacion}\n"
+            f"- Revisión humana: {plan.revision_humana}\n"
+            f"- Motivo: {plan.motivo}\n"
+            f"- Referencias de regla: {', '.join(plan.referencias_regla) or 'ninguna'}\n"
+            "Redacta la respuesta de forma coherente con este plan, diferencia una propuesta "
+            "de una acción realizada y no presentes una compensación como autorizada."
         )
 
     inicio_llm = time.perf_counter()

@@ -73,6 +73,31 @@ def planificar_accion(
                 referencias_regla=reglas,
                 gestiones_previas=historial,
             )
+        gestion_cerrada = next(
+            (
+                gestion
+                for gestion in historial
+                if gestion.get("estado") == "CERRADA" and gestion.get("accion") == accion
+            ),
+            None,
+        )
+        if gestion_cerrada:
+            return PlanAccion(
+                codigo_seguimiento=hechos.codigo_seguimiento,
+                accion=(
+                    f"No duplicar la acción de la gestión cerrada #{gestion_cerrada['id']}. "
+                    "Revisar si existen hechos nuevos antes de abrir otra gestión."
+                ),
+                prioridad="baja",
+                responsable="Mesa de Control",
+                estado_sugerido="CERRADA",
+                requiere_aprobacion=False,
+                revision_humana=True,
+                motivo="El historial ya contiene esta misma acción en estado cerrado.",
+                referencias_regla=reglas,
+                referencias_recuperadas=fuentes,
+                gestiones_previas=historial,
+            )
         estado = "PENDIENTE_APROBACION" if requiere_aprobacion else "PROPUESTA"
         return PlanAccion(
             codigo_seguimiento=hechos.codigo_seguimiento,
@@ -131,14 +156,62 @@ def planificar_accion(
 
     motivo = hechos.motivo_falla or ""
     if motivo == "M07":
+        observacion = (hechos.observacion or "").lower()
+        no_localizable = any(
+            clave in observacion for clave in ("no localizable", "perdido", "sin movimiento")
+        )
+        if not no_localizable:
+            return crear(
+                "Abrir un incidente simulado y escalarlo a Operaciones. Confirmar si el daño "
+                "o pérdida está acreditado antes de proponer una compensación.",
+                "alta",
+                "Operaciones",
+                "El motivo M07 requiere investigación; la observación no confirma que el "
+                "paquete esté perdido o no localizable.",
+                ["CAT-OPS-007 M07", "POL-COM-003 §§3–4"],
+                revision_humana=True,
+            )
         return crear(
-            "Abrir un incidente simulado y escalarlo a Operaciones; evaluar cualquier "
-            "compensación por separado según la política y su aprobación.",
-            "alta",
+            "Abrir un incidente simulado y escalarlo a Operaciones. Por paquete no "
+            "localizable, proponer reposición o reembolso del producto con el retailer, "
+            "más reembolso del despacho; requiere aprobación de Gerencia Comercial.",
+            "urgente",
             "Operaciones",
-            "El catálogo clasifica el paquete como perdido o dañado en la red.",
+            "El catálogo clasifica el paquete como perdido o dañado; POL-COM-003 §2 define "
+            "la compensación para un paquete no localizable.",
             ["CAT-OPS-007 M07", "POL-COM-003 §§2–4"],
+            requiere_aprobacion=True,
             revision_humana=True,
+        )
+
+    if hechos.fecha_entrega_real and motivo in {"M02", "M03", "M05"}:
+        return crear(
+            "Informar que el envío ya fue entregado y explicar el motivo registrado. "
+            "No proponer reintento ni compensación.",
+            "media",
+            "Mesa de Control",
+            "El tracking confirma entrega y la causa es atribuible al consumidor o retailer.",
+            ["CAT-OPS-007", "POL-COM-003 §1–2"],
+        )
+
+    if hechos.fecha_entrega_real and motivo == "M06":
+        return crear(
+            "Informar la entrega realizada y solicitar revisión humana de cualquier "
+            "excepción de compensación por zona de riesgo o acceso restringido.",
+            "media",
+            "Mesa de Control",
+            "El tracking confirma entrega; la excepción M06 requiere revisión manual.",
+            ["CAT-OPS-007 M06", "POL-COM-003 §1–2"],
+            revision_humana=True,
+        )
+
+    if hechos.fecha_entrega_real and not hechos.hay_retraso_confirmado:
+        return crear(
+            "Cerrar el análisis como entrega realizada dentro de la fecha promesa.",
+            "baja",
+            "Mesa de Control",
+            "El tracking confirma que la entrega se realizó sin retraso.",
+            ["SOP-OPS-014 §5", "POL-COM-003 §2"],
         )
 
     if hechos.intentos_entrega >= 3:
@@ -207,31 +280,66 @@ def planificar_accion(
         )
 
     dias = hechos.dias_retraso or 0
+    entregado = bool(hechos.fecha_entrega_real)
     if dias <= 1:
+        accion = (
+            "Informar la entrega realizada, reconocer el retraso y registrar una disculpa "
+            "formal. No ofrecer compensación económica."
+            if entregado
+            else "Proponer reprogramación al siguiente día hábil e informar la nueva fecha "
+            "solo cuando Planificación la confirme. No ofrecer compensación económica."
+        )
         return crear(
-            "Proponer reprogramación al siguiente día hábil; informar la nueva fecha solo "
-            "cuando Planificación la confirme. No ofrecer compensación económica.",
+            accion,
             "media",
-            "Planificación",
+            "Mesa de Control" if entregado else "Planificación",
             "El retraso atribuible a LogiRuta es de hasta 24 horas.",
             ["POL-COM-003 §2", "SOP-OPS-014 §6 y §8"],
+            revision_humana=True,
         )
     if dias <= 3:
+        accion = (
+            "Informar que el envío ya fue entregado y proponer un cupón de despacho gratis "
+            "para la próxima compra en el retailer, sujeto a aprobación del Supervisor de "
+            "Servicio al Cliente."
+            if entregado
+            else "Priorizar la reprogramación, informar al retailer y proponer un cupón de "
+            "despacho gratis para la próxima compra, sujeto a aprobación del Supervisor de "
+            "Servicio al Cliente."
+        )
         return crear(
-            "Priorizar el caso, informar al retailer y evaluar la compensación permitida "
-            "por la tabla detallada; no confirmar beneficios antes de su aprobación.",
+            accion,
             "alta",
-            "Mesa de Control",
+            "Supervisor de Servicio al Cliente",
             "El retraso atribuible a LogiRuta supera 24 y no excede 72 horas.",
             ["POL-COM-003 §2", "SOP-OPS-014 §§6–7", "SLA-COM-002 §4"],
             requiere_aprobacion=True,
         )
+    if dias <= 5:
+        accion = (
+            "Informar que el envío ya fue entregado y proponer el reembolso del despacho "
+            "más un cupón de despacho gratis, sujeto a aprobación del Jefe de Operaciones."
+            if entregado
+            else "Escalar a Operaciones, priorizar la reprogramación e informar al retailer. "
+            "Proponer el reembolso del despacho más un cupón de despacho gratis, sujeto a "
+            "aprobación del Jefe de Operaciones."
+        )
+        return crear(
+            accion,
+            "urgente",
+            "Jefe de Operaciones",
+            "El retraso atribuible a LogiRuta supera 72 horas y no excede cinco días.",
+            ["POL-COM-003 §2", "SOP-OPS-014 §7", "SLA-COM-002 §4"],
+            requiere_aprobacion=True,
+        )
+
     return crear(
-        "Escalar a Operaciones y tramitar la compensación que permita POL-COM-003 "
-        "con las aprobaciones requeridas.",
+        "Escalar a Gerencia Comercial y proponer reposición o reembolso del producto con "
+        "el retailer, más reembolso del despacho, sujeto a aprobación. No confirmar el "
+        "beneficio antes de la decisión humana.",
         "urgente",
-        "Operaciones",
-        "El retraso atribuible a LogiRuta supera 72 horas.",
-        ["POL-COM-003 §2", "SOP-OPS-014 §7", "SLA-COM-002 §4"],
+        "Gerencia Comercial",
+        "El retraso atribuible a LogiRuta supera cinco días.",
+        ["POL-COM-003 §2 y §4", "SOP-OPS-014 §7", "SLA-COM-002 §4"],
         requiere_aprobacion=True,
     )

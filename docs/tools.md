@@ -19,7 +19,7 @@ El agente de EVA2 amplía la base de LogiRuta de EVA1 con memoria, planificació
 - Las gestiones se consultarán por código de envío y guardarán fecha, acción, responsable, estado, aprobación y referencias documentales.
 - Estados permitidos: `PROPUESTA`, `PENDIENTE_APROBACION`, `REGISTRADA` y `CERRADA`. La interfaz no ejecuta acciones reales.
 - Si una compensación requiere aprobación, la gestión queda en `PENDIENTE_APROBACION`; solo una acción humana explícita en la interfaz puede marcarla aprobada o cerrarla sin aprobación.
-- Las propuestas y gestiones abiertas se muestran en el historial y el planner evita duplicarlas; una gestión cerrada deja de bloquear una nueva planificación.
+- Las propuestas y gestiones abiertas se muestran en el historial y el planner propone darles seguimiento; una acción cerrada tampoco se vuelve a registrar si los hechos llevan a la misma acción. Hechos nuevos permiten una nueva evaluación.
 - El planner es determinista y devuelve las reglas/fuentes asociadas. Si faltan hechos o no se recuperan fragmentos documentales, deriva el caso a revisión humana.
 
 Estas decisiones describen la implementación actual de EVA2. Actualizar la tabla si cambian contratos o estados de herramientas.

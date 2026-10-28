@@ -11,14 +11,15 @@ La EVA2 amplía esa base con memoria de sesión, recuperación de gestiones ante
 
 ## Estructura
 
-- `src/`: agente, tracking, recuperación documental e interfaz Streamlit heredados de la EVA1; aquí se implementarán las extensiones de EVA2.
+- `src/`: agente, tracking, recuperación documental, memoria, planner e interfaz Streamlit.
 - `data/`: datos simulados, fuentes operativas e índice vectorial local.
 - `prompts/`: instrucciones de generación del agente.
-- `evidencias/`: escenarios y evidencias de referencia de la EVA1.
+- `evidencias/`: escenarios y evidencias de referencia de la EVA1; las evidencias nuevas de EVA2 se agregarán en `evidencias/eva2/`.
 - `docs/alcance.md`: alcance y límites de la EVA2.
 - `docs/tools.md`: contratos y decisiones de diseño de las herramientas.
 - `docs/reglas.md`: reglas del planner y precedencia de políticas.
 - `docs/GUIA_ESTUDIO_EVA2.md`: conceptos, arquitectura, stack y preparación de la defensa; se actualiza con el avance.
+- `docs/escenarios_eva2.md`: matriz de escenarios propuestos y evidencia por recopilar.
 
 ## Configuración segura
 
@@ -37,8 +38,9 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [x] Definir contratos y decisiones de arquitectura para memoria y planner.
 - [x] Implementar memoria persistente de sesión e historial de gestiones en SQLite.
 - [x] Implementar planner determinista e integrarlo en la interfaz.
+- [x] Diseñar matriz de escenarios EVA2 y criterios de evidencia.
 - [ ] Ejecutar la aplicación, corregir lo que aparezca y documentar los resultados.
-- [ ] Agregar escenarios EVA2 y sus evidencias.
+- [ ] Ejecutar escenarios EVA2 y guardar sus evidencias.
 
 ## Material relacionado
 
@@ -46,4 +48,5 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [Reglas operativas](docs/reglas.md)
 - [Contratos de herramientas](docs/tools.md)
 - [Guía de estudio EVA2](docs/GUIA_ESTUDIO_EVA2.md)
+- [Matriz de escenarios EVA2](docs/escenarios_eva2.md)
 - [Documentación técnica de EVA1](docs/documentacion_tecnica_eva1.md)

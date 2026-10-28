@@ -45,7 +45,7 @@ flowchart TD
 3. Si hay un código, `consultar_envio()` busca una coincidencia exacta en los CSV y calcula los hechos en Python. Si el código no existe, el sistema se detiene sin pedirle al LLM que invente un diagnóstico.
 4. Si el envío existe, se buscan las gestiones anteriores y se preparan consultas sobre el motivo, intentos, acción, SLA, compensación y otros aspectos pertinentes.
 5. La recuperación híbrida encuentra fragmentos documentales. El planner aplica reglas deterministas y conserva referencias a las reglas y fragmentos.
-6. El LLM recibe la consulta, los hechos verificados y los fragmentos para redactar una respuesta. No calcula fechas ni autoriza beneficios.
+6. El LLM recibe la consulta, los hechos verificados, los fragmentos y el plan determinista para redactar una respuesta coherente. No calcula fechas, reemplaza el plan ni autoriza beneficios.
 7. La interfaz presenta la respuesta, los hechos, las fuentes, el plan y el historial. El analista puede registrar una gestión de prueba y cambiar su estado de forma explícita.
 
 ## 3. Stack tecnológico
@@ -127,10 +127,11 @@ Estas reglas se aplican a datos simulados y deben contrastarse con las fuentes o
 - **M05 — rechazo:** no reprogramar; proponer devolución al origen; sin compensación.
 - **M06 — zona de riesgo/acceso restringido:** proponer hasta dos intentos diurnos; las excepciones pasan a revisión humana.
 - **Tres o más intentos fallidos:** proponer devolución al origen y notificar al retailer el mismo día hábil.
-- **M07 — paquete perdido/dañado:** abrir un incidente simulado y escalar; cualquier compensación se evalúa por separado según política y aprobación.
-- **Atraso LogiRuta de hasta 24 horas:** proponer reprogramación al siguiente día hábil; no ofrecer compensación económica.
-- **Más de 24 y hasta 72 horas:** priorizar, informar y evaluar únicamente la compensación permitida por POL-COM-003, con aprobación.
-- **Más de 72 horas:** escalar a Operaciones y tramitar la compensación permitida, con las aprobaciones requeridas.
+- **M07 — paquete perdido/dañado:** abrir un incidente y escalar. Si el paquete está no localizable, POL-COM-003 indica gestionar reposición o reembolso del producto con el retailer, más reembolso del despacho, con aprobación de Gerencia Comercial. Si la evidencia no confirma la pérdida, revisar antes de proponer una compensación.
+- **Atraso LogiRuta de hasta 24 horas:** disculpa formal y fecha nueva confirmada; sin compensación económica. La acción corresponde a Mesa de Control y su analista.
+- **Más de 24 y hasta 72 horas:** cupón de despacho gratis para la próxima compra, pendiente de aprobación del Supervisor de Servicio al Cliente.
+- **Más de 72 horas y hasta 5 días:** reembolso del despacho más cupón de despacho gratis, pendiente de aprobación del Jefe de Operaciones.
+- **Más de 5 días:** reposición o reembolso del producto con el retailer, más reembolso del despacho, pendiente de aprobación de Gerencia Comercial.
 
 El detalle de precedencia y fuentes está en [`reglas.md`](reglas.md). No memorizar solo la acción: saber explicar cuál hecho la activa y qué documento la respalda.
 
@@ -210,7 +211,7 @@ El agente detiene el diagnóstico y pide verificar el código; no llama al LLM p
 La primera conserva la conversación y el envío activo; el segundo conserva acciones por código de envío, con estado y fuentes.
 
 **¿Cómo evita repetir una gestión?**  
-El planner consulta propuestas, gestiones pendientes de aprobación y gestiones registradas abiertas. Propone darles seguimiento antes de crear otra acción; una gestión cerrada ya no bloquea la planificación.
+El planner consulta propuestas, gestiones pendientes de aprobación y gestiones registradas abiertas. Propone darles seguimiento; si encuentra una acción cerrada idéntica a la que sugieren los mismos hechos, no permite registrarla otra vez. Hechos nuevos llevan a una nueva evaluación.
 
 **¿Qué ocurre con una compensación que requiere aprobación?**  
 Se registra como `PENDIENTE_APROBACION`. Solo una acción humana explícita en la interfaz puede marcarla aprobada/registrada o cerrarla sin aprobación.
@@ -231,7 +232,7 @@ Los siguientes son casos de demostración propuestos; todavía deben convertirse
 4. Atraso atribuible a LogiRuta de hasta 24 horas: reprogramación sin compensación económica.
 5. Atraso superior a 24 horas: compensación solo como evaluación pendiente de aprobación.
 6. Gestión pendiente: la siguiente planificación debe proponer seguimiento, no una solicitud duplicada.
-7. Cierre de gestión: el planner debe volver a evaluar la acción operativa.
+7. Cierre de gestión: el planner vuelve a evaluar los hechos y no duplica una acción idéntica que ya está cerrada.
 8. Excepción M07: incidente y escalamiento, con compensación tratada aparte.
 
 La línea base de EVA1 es de siete escenarios y 34 verificaciones. No declarar resultados de EVA2 hasta que los escenarios se ejecuten y las evidencias se guarden.
@@ -249,7 +250,7 @@ La línea base de EVA1 es de siete escenarios y 34 verificaciones. No declarar r
 
 ### Pendiente
 
-- Crear y documentar los escenarios EVA2 y guardar resultados/evidencias.
+- Ejecutar los escenarios EVA2 diseñados en [`escenarios_eva2.md`](escenarios_eva2.md) y guardar resultados/evidencias.
 - Revisar el funcionamiento de la interfaz y ajustar errores encontrados al ejecutar.
 - Completar README de instalación y operación con instrucciones verificadas en el equipo.
 - Actualizar arquitectura, documentación técnica e informe de EVA2 con resultados reales.
@@ -260,4 +261,6 @@ La línea base de EVA1 es de siete escenarios y 34 verificaciones. No declarar r
 | Fecha | Cambio |
 |---|---|
 | 2026-10-27 | Primera versión: describe la base LogiRuta, el stack, la memoria SQLite, el planner determinista, las reglas acordadas y los pendientes de EVA2. |
+| 2026-10-27 | Se precisaron los tramos y aprobadores de compensación, la recuperación de sesión mediante URL y el tratamiento de acciones entregadas/cerradas. |
+| 2026-10-27 | Matriz de 12 escenarios EVA2 diseñada; Ollama iniciado y el índice local creado con 43 fragmentos. Los escenarios EVA2 siguen pendientes de ejecución. |
 

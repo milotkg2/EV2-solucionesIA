@@ -327,7 +327,7 @@ if resultado is not None:
             st.subheader("Siguiente acción propuesta")
             col_prioridad, col_estado, col_responsable = st.columns(3)
             col_prioridad.metric("Prioridad", plan.prioridad.capitalize())
-            col_estado.metric("Estado al registrar", plan.estado_sugerido.replace("_", " ").title())
+            col_estado.metric("Estado sugerido", plan.estado_sugerido.replace("_", " ").title())
             col_responsable.metric("Responsable", plan.responsable)
             st.markdown(f"**Acción:** {plan.accion}")
             st.caption(plan.motivo)
@@ -342,7 +342,9 @@ if resultado is not None:
                 st.markdown("**Fragmentos recuperados**")
                 st.write("\n\n".join(plan.referencias_recuperadas))
 
-            if st.button("Registrar gestión simulada", key=f"registrar_{plan.codigo_seguimiento}"):
+            if plan.estado_sugerido == "CERRADA":
+                st.info("La misma acción ya figura cerrada en el historial; no se puede registrar de nuevo.")
+            elif st.button("Registrar gestión simulada", key=f"registrar_{plan.codigo_seguimiento}"):
                 try:
                     gestion_id = registrar_gestion(
                         codigo_seguimiento=plan.codigo_seguimiento,

@@ -7,8 +7,10 @@
 | `retrieval.py` | Listo | Recuperacion hibrida + fusion RRF |
 | `tracking.py` | Listo | Consulta determinista del CSV y calculo de hechos |
 | `prompts.py` | Listo | Carga y ensamblado de los prompts |
-| `agent.py` | Listo | Orquestacion: tracking, consultas dirigidas, RAG y LLM |
-| `app.py` | Listo | Interfaz Streamlit con panel de evidencia |
-| `evaluar.py` | Listo | Ejecuta los 7 escenarios y escribe las evidencias |
+| `memory.py` | EVA2 | Memoria SQLite para turnos, envíos activos e historial de gestiones |
+| `planner.py` | EVA2 | Planificacion determinista, aprobaciones y prevención de gestiones duplicadas |
+| `agent.py` | EVA1 + EVA2 | Orquestacion: contexto, tracking, RAG, planner y LLM |
+| `app.py` | EVA1 + EVA2 | Interfaz Streamlit con panel de evidencia, memoria y gestiones simuladas |
+| `evaluar.py` | Línea base EVA1 | Ejecuta los siete escenarios heredados; aún no evalúa los escenarios nuevos de EVA2 |
 
 Como instalar y probar: ver el `README.md` de la raiz del repositorio.
