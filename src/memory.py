@@ -5,9 +5,10 @@ from __future__ import annotations
 import json
 import sqlite3
 import uuid
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 DB_PATH = Path(__file__).resolve().parent.parent / "data" / "memoria_eva2.sqlite3"
 ESTADOS_GESTION = {
@@ -22,12 +23,20 @@ def _ahora() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def _conectar() -> sqlite3.Connection:
+@contextmanager
+def _conectar() -> Iterator[sqlite3.Connection]:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     conexion = sqlite3.connect(DB_PATH, timeout=10)
     conexion.row_factory = sqlite3.Row
     conexion.execute("PRAGMA foreign_keys = ON")
-    return conexion
+    try:
+        yield conexion
+        conexion.commit()
+    except Exception:
+        conexion.rollback()
+        raise
+    finally:
+        conexion.close()
 
 
 def inicializar_memoria() -> None:

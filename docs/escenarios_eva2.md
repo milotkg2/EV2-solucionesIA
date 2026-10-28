@@ -1,10 +1,10 @@
 # Matriz de escenarios EVA2 — LogiRuta
 
-**Estado:** diseñados, aún no ejecutados.  
+**Estado:** diseñados; los 12 escenarios aún no se han ejecutado en la interfaz. Hay verificaciones técnicas parciales en [`VERIFICACION_TECNICA.md`](../evidencias/eva2/VERIFICACION_TECNICA.md).  
 **Fecha de diseño:** 27 de octubre de 2026.  
 **Propósito:** planificar la demostración y reunir evidencia de memoria, planner y trazabilidad sin mezclar estos resultados con la línea base de EVA1.
 
-> Los casos de abajo son criterios esperados, no resultados observados. La evidencia de EVA1 conserva su propio resumen de 7 escenarios y 34/34 verificaciones; no cuenta como ejecución de EVA2.
+> Los casos de abajo son criterios esperados, no resultados observados. La evidencia de EVA1 conserva su propio resumen de 7 escenarios y 34/34 verificaciones; no cuenta como ejecución de EVA2. Las verificaciones parciales de componentes están delimitadas en el documento enlazado y tampoco certifican la demo completa.
 
 ## Requisitos previos para la ejecución
 

@@ -20,6 +20,7 @@ La EVA2 amplía esa base con memoria de sesión, recuperación de gestiones ante
 - `docs/reglas.md`: reglas del planner y precedencia de políticas.
 - `docs/GUIA_ESTUDIO_EVA2.md`: conceptos, arquitectura, stack y preparación de la defensa; se actualiza con el avance.
 - `docs/escenarios_eva2.md`: matriz de escenarios propuestos y evidencia por recopilar.
+- `evidencias/eva2/VERIFICACION_TECNICA.md`: verificaciones parciales locales y sus límites.
 
 ## Configuración segura
 
@@ -39,6 +40,7 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [x] Implementar memoria persistente de sesión e historial de gestiones en SQLite.
 - [x] Implementar planner determinista e integrarlo en la interfaz.
 - [x] Diseñar matriz de escenarios EVA2 y criterios de evidencia.
+- [x] Verificar localmente tracking, planner, memoria y recuperación RAG con generación simulada.
 - [ ] Ejecutar la aplicación, corregir lo que aparezca y documentar los resultados.
 - [ ] Ejecutar escenarios EVA2 y guardar sus evidencias.
 
@@ -49,4 +51,5 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [Contratos de herramientas](docs/tools.md)
 - [Guía de estudio EVA2](docs/GUIA_ESTUDIO_EVA2.md)
 - [Matriz de escenarios EVA2](docs/escenarios_eva2.md)
+- [Verificación técnica parcial](evidencias/eva2/VERIFICACION_TECNICA.md)
 - [Documentación técnica de EVA1](docs/documentacion_tecnica_eva1.md)
