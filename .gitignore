@@ -1,0 +1,10 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+data/chroma_db/
+data/vectorstore/
+data/memoria_eva2.sqlite3
+data/memoria_eva2.sqlite3-*
+evidence/videos/*.mp4
+.streamlit/secrets.toml
