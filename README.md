@@ -50,6 +50,7 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [Reglas operativas](docs/reglas.md)
 - [Contratos de herramientas](docs/tools.md)
 - [Guía de estudio EVA2](docs/GUIA_ESTUDIO_EVA2.md)
+- [Revisión de avance contra la rúbrica](docs/rubrica_eva2.md)
 - [Matriz de escenarios EVA2](docs/escenarios_eva2.md)
 - [Verificación técnica parcial](evidencias/eva2/VERIFICACION_TECNICA.md)
 - [Documentación técnica de EVA1](docs/documentacion_tecnica_eva1.md)
