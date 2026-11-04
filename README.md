@@ -14,7 +14,7 @@ La EVA2 amplía esa base con memoria de sesión, recuperación de gestiones ante
 - `src/`: agente, tracking, recuperación documental, memoria, planner e interfaz Streamlit.
 - `data/`: datos simulados, fuentes operativas e índice vectorial local.
 - `prompts/`: instrucciones de generación del agente.
-- `evidencias/`: escenarios y evidencias de referencia de la EVA1; las evidencias nuevas de EVA2 se agregarán en `evidencias/eva2/`.
+- `evidencias/`: escenarios y evidencias de referencia de la EVA1; las evidencias nuevas de EVA2 están en `evidencias/eva2/`.
 - `docs/alcance.md`: alcance y límites de la EVA2.
 - `docs/tools.md`: contratos y decisiones de diseño de las herramientas.
 - `docs/reglas.md`: reglas del planner y precedencia de políticas.
@@ -42,9 +42,10 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [x] Diseñar matriz de escenarios EVA2 y criterios de evidencia.
 - [x] Verificar localmente tracking, planner, memoria y recuperación RAG con generación simulada.
 - [x] Registrar evidencia reproducible de tracking, planner y memoria sin llamadas a LLM.
-- [ ] Ejecutar la aplicación, corregir lo que aparezca y documentar los resultados.
-- [ ] Ejecutar escenarios EVA2 y guardar sus evidencias.
-- [ ] Completar justificaciones y reflexiones propias en el informe y capturar la demostración en Streamlit.
+- [x] Ejecutar la aplicación, verificar RAG y generación con Groq, y documentar resultados.
+- [x] Guardar capturas de consulta generada, fuentes RAG, tracking y manejo de código inexistente.
+- [ ] Ejecutar más escenarios EVA2 y guardar sus evidencias.
+- [ ] Completar justificaciones y reflexiones propias en el informe y demostrar memoria/gestiones desde Streamlit.
 
 ## Material relacionado
 
@@ -57,5 +58,6 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [Matriz de escenarios EVA2](docs/escenarios_eva2.md)
 - [Verificación técnica parcial](evidencias/eva2/VERIFICACION_TECNICA.md)
 - [Ejecución determinista EVA2](evidencias/eva2/EJECUCION_DETERMINISTA.md)
+- [Capturas de la demostración Streamlit](evidencias/eva2/capturas/)
 - [Resultado JSON de la verificación](evidencias/eva2/resultado_verificacion_determinista.json)
 - [Documentación técnica de EVA1](docs/documentacion_tecnica_eva1.md)

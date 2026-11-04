@@ -2,13 +2,14 @@
 
 **Fecha de ejecución:** 3 de noviembre de 2026  
 **Integrantes:** Eder Valdivia y Camilo Romero  
-**Comando reproducible:** `python scripts/verificar_eva2_sin_llm.py`
+**Ejecución determinista:** `python scripts/verificar_eva2_sin_llm.py`
+**Demostración Streamlit:** consulta real a Groq y recuperación RAG el 3 de noviembre de 2026.
 
-La salida íntegra de la corrida está guardada en [`resultado_verificacion_determinista.json`](resultado_verificacion_determinista.json).
+La salida íntegra de la corrida determinista está guardada en [`resultado_verificacion_determinista.json`](resultado_verificacion_determinista.json). Las capturas de la interfaz se adjuntan en [`capturas/`](capturas/) y en el anexo del informe técnico.
 
 ## Alcance
 
-Esta evidencia ejercita código real de tracking, planner, agente y memoria con datos simulados. Se usa una base SQLite temporal y se bloquea la llamada generativa en el caso de código inexistente. No se realizaron llamadas a Groq, Gemini ni a un modelo local. Las referencias de política entregadas al planner son referencias de control; esta ejecución no verifica el recuperador RAG ni la calidad de redacción de un LLM.
+La corrida determinista ejercita código real de tracking, planner, agente y memoria con datos simulados. Se usa una base SQLite temporal y se bloquea la llamada generativa en el caso de código inexistente. Por separado, una demostración en Streamlit volvió a ejecutar la recuperación RAG con `nomic-embed-text` local y generó una respuesta real mediante Groq (`openai/gpt-oss-120b`).
 
 ## Resultados observados
 
@@ -21,11 +22,24 @@ Esta evidencia ejercita código real de tracking, planner, agente y memoria con 
 | Cierre y duplicados | Después de cerrar la gestión, el planner indicó no duplicar la misma acción y devolvió estado `CERRADA`. | Correcto. |
 | Entrega con atraso de hasta 24 horas | `LR-2026-008477` ya estaba entregado; el plan indicó informar la entrega y no ofrecer compensación económica ni reprogramar. | Correcto. |
 
+## Demostración Streamlit, RAG y LLM
+
+Se consultó el envío simulado `LR-2026-005317` con la pregunta sobre la compensación que corresponde. La interfaz mostró el índice RAG disponible, configuración Groq y embeddings locales. La recuperación devolvió 8 fragmentos. Groq generó el diagnóstico en 8,34 s tras 14,17 s de recuperación; la respuesta citó siete fuentes (`F1`–`F7`), reconoció que los intentos restantes no se podían determinar con el respaldo documental y propuso un cupón de despacho gratis sujeto a aprobación humana. La fecha de operación fija de la demo era 23 de septiembre de 2026.
+
+En una sesión nueva se consultó el código inexistente `LR-2026-999999`. El resultado fue “No encontrado”, con cero fragmentos, 0,0 s de recuperación y 0,0 s de generación; la interfaz informó que no se llamó al LLM. Esto confirma que el diagnóstico no se genera sin hechos de tracking.
+
+| Archivo | Evidencia |
+|---|---|
+| [`EV2-01-generacion-groq.png`](capturas/EV2-01-generacion-groq.png) | Respuesta generada y citada por Groq. |
+| [`EV2-02-fuentes-rag.png`](capturas/EV2-02-fuentes-rag.png) | Fragmentos recuperados por RAG. |
+| [`EV2-03-hechos-tracking.png`](capturas/EV2-03-hechos-tracking.png) | Hechos calculados desde tracking. |
+| [`EV2-04-codigo-inexistente.png`](capturas/EV2-04-codigo-inexistente.png) | Código inexistente, sin invocación al LLM. |
+
 ## Límites y evidencia pendiente
 
-- La ejecución prueba componentes desde Python; no constituye una demostración de la interfaz Streamlit.
-- No prueba recuperación semántica RAG ni generación con Groq. El índice local está disponible, pero Ollama no respondió en el momento de esta ejecución.
-- Faltan capturas de pantalla de la interfaz y evidencia de los restantes escenarios de la matriz EVA2.
+- La demo verifica una consulta generativa y el manejo de un código inexistente; no cubre todos los escenarios de `docs/escenarios_eva2.md` ni reemplaza la defensa en vivo.
+- La latencia corresponde a una sola consulta y puede variar según el proveedor, la red y el estado del servicio.
+- La respuesta generada se cotejó con sus fuentes visibles; la evidencia no constituye una evaluación estadística de precisión para todos los documentos y consultas.
 - Las pruebas históricas de `evidencias/escenarios/` pertenecen a EVA1 y no se presentan como resultados de EVA2.
 
 ## Resultado íntegro
