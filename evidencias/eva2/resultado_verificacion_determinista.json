@@ -1,0 +1,34 @@
+{
+  "resultado": "OK",
+  "sesion": {
+    "turnos_recuperados": 2,
+    "envio_activo_recuperado": "LR-2026-005317"
+  },
+  "envio_inexistente": {
+    "tipo": "envio_no_encontrado",
+    "llamadas_llm": 0,
+    "respuesta": "No encontre el envio **LR-2026-999999** en los registros de tracking. Verifica el codigo con el cliente o el retailer antes de continuar. No se genero diagnostico para evitar una respuesta sin respaldo en datos."
+  },
+  "plan_3_dias": {
+    "encontrado": true,
+    "dias_retraso": 3,
+    "responsable_aprobador": "Supervisor de Servicio al Cliente",
+    "estado_inicial": "PENDIENTE_APROBACION"
+  },
+  "gestion": {
+    "id_temporal": 1,
+    "pendiente": "Dar seguimiento a la aprobación pendiente de la gestión #1; no generar una segunda solicitud de compensación.",
+    "registrada": "Consultar el resultado de la gestión registrada #1 y actualizar su estado antes de proponer una acción duplicada.",
+    "cerrada": "No duplicar la acción de la gestión cerrada #1. Revisar si existen hechos nuevos antes de abrir otra gestión.",
+    "estado_final": "CERRADA"
+  },
+  "entrega_hasta_24h": {
+    "fecha_entrega": "2026-09-22",
+    "accion": "Informar la entrega realizada, reconocer el retraso y registrar una disculpa formal. No ofrecer compensación económica."
+  },
+  "alcance": [
+    "Sin llamadas a Groq, Gemini ni generación local.",
+    "SQLite fue temporal; no se alteró data/memoria_eva2.sqlite3.",
+    "Las referencias suministradas al planner son referencias de control; este script no verifica recuperación RAG."
+  ]
+}

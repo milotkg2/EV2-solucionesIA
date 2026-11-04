@@ -41,8 +41,10 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [x] Implementar planner determinista e integrarlo en la interfaz.
 - [x] Diseñar matriz de escenarios EVA2 y criterios de evidencia.
 - [x] Verificar localmente tracking, planner, memoria y recuperación RAG con generación simulada.
+- [x] Registrar evidencia reproducible de tracking, planner y memoria sin llamadas a LLM.
 - [ ] Ejecutar la aplicación, corregir lo que aparezca y documentar los resultados.
 - [ ] Ejecutar escenarios EVA2 y guardar sus evidencias.
+- [ ] Completar justificaciones y reflexiones propias en el informe y capturar la demostración en Streamlit.
 
 ## Material relacionado
 
@@ -51,6 +53,9 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [Contratos de herramientas](docs/tools.md)
 - [Guía de estudio EVA2](docs/GUIA_ESTUDIO_EVA2.md)
 - [Revisión de avance contra la rúbrica](docs/rubrica_eva2.md)
+- [Informe técnico EVA2 (borrador de cinco páginas)](informe/Informe_Tecnico_EVA2_LogiRuta.docx)
 - [Matriz de escenarios EVA2](docs/escenarios_eva2.md)
 - [Verificación técnica parcial](evidencias/eva2/VERIFICACION_TECNICA.md)
+- [Ejecución determinista EVA2](evidencias/eva2/EJECUCION_DETERMINISTA.md)
+- [Resultado JSON de la verificación](evidencias/eva2/resultado_verificacion_determinista.json)
 - [Documentación técnica de EVA1](docs/documentacion_tecnica_eva1.md)
