@@ -44,8 +44,10 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [x] Registrar evidencia reproducible de tracking, planner y memoria sin llamadas a LLM.
 - [x] Ejecutar la aplicación, verificar RAG y generación con Groq, y documentar resultados.
 - [x] Guardar capturas de consulta generada, fuentes RAG, tracking y manejo de código inexistente.
-- [ ] Ejecutar más escenarios EVA2 y guardar sus evidencias.
-- [ ] Completar justificaciones y reflexiones propias en el informe y demostrar memoria/gestiones desde Streamlit.
+- [x] Ejecutar y documentar cinco escenarios EVA2 en Streamlit; quedan siete de doce por cubrir.
+- [x] Demostrar seguimiento contextual y aprobación/registro simulados desde Streamlit.
+- [ ] Reabrir la sesión en una nueva conexión y demostrar la planificación posterior a una gestión registrada.
+- [ ] Completar justificaciones, conclusión y reflexiones del equipo con redacción propia.
 
 ## Material relacionado
 
@@ -54,10 +56,11 @@ La guía de estudio incluye pasos iniciales de instalación y ejecución. Las ac
 - [Contratos de herramientas](docs/tools.md)
 - [Guía de estudio EVA2](docs/GUIA_ESTUDIO_EVA2.md)
 - [Revisión de avance contra la rúbrica](docs/rubrica_eva2.md)
-- [Informe técnico EVA2 (borrador de cinco páginas)](informe/Informe_Tecnico_EVA2_LogiRuta.docx)
+- [Informe técnico EVA2 (cinco páginas de cuerpo y anexo de ocho capturas)](informe/Informe_Tecnico_EVA2_LogiRuta.docx)
 - [Matriz de escenarios EVA2](docs/escenarios_eva2.md)
 - [Verificación técnica parcial](evidencias/eva2/VERIFICACION_TECNICA.md)
 - [Ejecución determinista EVA2](evidencias/eva2/EJECUCION_DETERMINISTA.md)
+- [Ejecución adicional en Streamlit](evidencias/eva2/EJECUCION_STREAMLIT_ADICIONAL.md)
 - [Capturas de la demostración Streamlit](evidencias/eva2/capturas/)
 - [Resultado JSON de la verificación](evidencias/eva2/resultado_verificacion_determinista.json)
 - [Documentación técnica de EVA1](docs/documentacion_tecnica_eva1.md)

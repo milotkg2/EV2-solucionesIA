@@ -5,7 +5,7 @@
 **Ejecución determinista:** `python scripts/verificar_eva2_sin_llm.py`
 **Demostración Streamlit:** consulta real a Groq y recuperación RAG el 3 de noviembre de 2026.
 
-La salida íntegra de la corrida determinista está guardada en [`resultado_verificacion_determinista.json`](resultado_verificacion_determinista.json). Las capturas de la interfaz se adjuntan en [`capturas/`](capturas/) y en el anexo del informe técnico.
+La salida íntegra de la corrida determinista está guardada en [`resultado_verificacion_determinista.json`](resultado_verificacion_determinista.json). La demostración ampliada en Streamlit del 6 de noviembre está descrita en [`EJECUCION_STREAMLIT_ADICIONAL.md`](EJECUCION_STREAMLIT_ADICIONAL.md); sus capturas están en [`capturas/`](capturas/) y en el anexo del informe técnico.
 
 ## Alcance
 

@@ -235,7 +235,7 @@ Los siguientes son casos de demostración propuestos; todavía deben convertirse
 7. Cierre de gestión: el planner vuelve a evaluar los hechos y no duplica una acción idéntica que ya está cerrada.
 8. Excepción M07: incidente y escalamiento, con compensación tratada aparte.
 
-La línea base de EVA1 es de siete escenarios y 34 verificaciones. La verificación técnica parcial de componentes está en [`VERIFICACION_TECNICA.md`](../evidencias/eva2/VERIFICACION_TECNICA.md); no equivale a ejecutar los escenarios EVA2 en la interfaz. No declarar resultados finales de EVA2 hasta que los escenarios se ejecuten y las evidencias se guarden.
+La línea base de EVA1 es de siete escenarios y 34 verificaciones. Cinco escenarios de EVA2 ya tienen resultados de Streamlit documentados en [`EJECUCION_STREAMLIT_ADICIONAL.md`](../evidencias/eva2/EJECUCION_STREAMLIT_ADICIONAL.md); la verificación técnica parcial de componentes está en [`VERIFICACION_TECNICA.md`](../evidencias/eva2/VERIFICACION_TECNICA.md). Los casos aún pendientes no se presentan como ejecutados.
 
 ## 10. Estado y bitácora de actualización
 
@@ -248,14 +248,16 @@ La línea base de EVA1 es de siete escenarios y 34 verificaciones. La verificaci
 - Interfaz para mostrar fuentes/historial y registrar o actualizar gestiones simuladas.
 - Dependencias instaladas en `.venv`.
 - Índice local construido con 43 fragmentos y verificaciones técnicas parciales de tracking, planner, SQLite y flujo RAG.
+- RAG recuperó ocho fragmentos y Groq generó respuestas citadas en los escenarios ejecutados el 3 y 6 de noviembre.
+- La sesión mantuvo el envío M02 para una pregunta de seguimiento sin código; en M04 una gestión simulada pasó a `REGISTRADA` después de la aprobación humana.
+- Hay evidencia en Streamlit para cinco de los doce escenarios de la matriz; se enlaza desde `docs/escenarios_eva2.md`.
 
 ### Pendiente
 
-- Ejecutar los escenarios EVA2 diseñados en [`escenarios_eva2.md`](escenarios_eva2.md) y guardar resultados/evidencias.
-- Revisar el funcionamiento de la interfaz con Groq o el proveedor acordado y ajustar errores encontrados al ejecutar.
+- Ejecutar los escenarios EVA2 aún pendientes en [`escenarios_eva2.md`](escenarios_eva2.md) y guardar resultados/evidencias.
+- Reabrir una sesión Streamlit en una conexión nueva y verificar que la gestión `REGISTRADA` guíe el plan de seguimiento sin duplicar la acción.
 - Completar README de instalación y operación con instrucciones verificadas en el equipo.
-- Actualizar arquitectura, documentación técnica e informe de EVA2 con resultados reales.
-- Redactar en equipo las justificaciones técnicas y reflexiones personales solicitadas por la pauta.
+- Completar el informe con justificaciones, conclusiones y reflexiones redactadas por Eder y Camilo a partir de sus aportes reales.
 
 ### Bitácora
 
@@ -265,4 +267,6 @@ La línea base de EVA1 es de siete escenarios y 34 verificaciones. La verificaci
 | 2026-10-27 | Se precisaron los tramos y aprobadores de compensación, la recuperación de sesión mediante URL y el tratamiento de acciones entregadas/cerradas. |
 | 2026-10-27 | Matriz de 12 escenarios EVA2 diseñada; Ollama iniciado y el índice local creado con 43 fragmentos. Los escenarios EVA2 siguen pendientes de ejecución. |
 | 2026-10-28 | Verificación técnica parcial de tracking, planner, memoria y RAG con generación simulada. Se detuvo la llamada al LLM local por carga elevada; Groq y la interfaz siguen pendientes de verificación. |
+| 2026-11-06 | Streamlit verificó seguimiento M02 en la misma sesión, entrega tardía M01, paquete no localizable M07, atraso M04 de cinco días y registro/aprobación de una gestión. La matriz documenta 5 de 12 escenarios; reapertura de sesión y otros casos quedan pendientes. |
+| 2026-11-06 | Streamlit verificó seguimiento M02 en la misma sesión, entrega tardía M01, paquete no localizable M07, atraso M04 de cinco días y registro/aprobación de una gestión. La matriz documenta 5 de 12 escenarios; la reapertura en una conexión nueva y otros casos quedan pendientes. |
 

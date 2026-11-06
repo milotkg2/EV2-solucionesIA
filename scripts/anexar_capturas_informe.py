@@ -2,6 +2,7 @@ from pathlib import Path
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml.ns import qn
 from docx.shared import Inches, Pt, RGBColor
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -9,6 +10,26 @@ DOCX = ROOT / "informe" / "Informe_Tecnico_EVA2_LogiRuta.docx"
 CAPTURAS = ROOT / "evidencias" / "eva2" / "capturas"
 
 doc = Document(DOCX)
+
+for style_name in ("Title", "Heading 1", "Heading 2"):
+    style = doc.styles[style_name]
+    style.font.color.rgb = RGBColor(0, 0, 0)
+    ppr = style._element.pPr
+    if ppr is not None:
+        border = ppr.find(qn("w:pBdr"))
+        if border is not None:
+            ppr.remove(border)
+for paragraph in doc.paragraphs:
+    if paragraph.style.name in {"Title", "Heading 1", "Heading 2"}:
+        for run in paragraph.runs:
+            run.font.color.rgb = RGBColor(0, 0, 0)
+if len(doc.paragraphs) > 1:
+    for run in doc.paragraphs[1].runs:
+        run.font.color.rgb = RGBColor(0, 0, 0)
+for section in doc.sections:
+    for paragraph in section.header.paragraphs:
+        for run in paragraph.runs:
+            run.font.color.rgb = RGBColor(0, 0, 0)
 
 replacements = {
     "El proyecto amplía el asistente de la Mesa de Control de LogiRuta con memoria persistente, planificación de acciones y registro simulado de gestiones. El tracking se calcula mediante reglas deterministas; la recuperación híbrida aporta documentos operativos y el LLM redacta respuestas usando esos antecedentes. La evidencia ejecutada el 3 de noviembre confirma los flujos de código inexistente, planificación y estados de gestión en una base temporal. La demostración completa en Streamlit y la generación real con Groq aún requieren evidencia adicional.":
@@ -31,6 +52,69 @@ for paragraph in doc.paragraphs:
     if paragraph.text in replacements:
         paragraph.text = replacements[paragraph.text]
 
+def update_date(paragraph):
+    for run in paragraph.runs:
+        if "3 de noviembre de 2026" in run.text:
+            run.text = run.text.replace("3 de noviembre de 2026", "6 de noviembre de 2026")
+
+for paragraph in doc.paragraphs:
+    update_date(paragraph)
+for table in doc.tables:
+    for row in table.rows:
+        for cell in row.cells:
+            for paragraph in cell.paragraphs:
+                update_date(paragraph)
+for section in doc.sections:
+    for paragraph in section.header.paragraphs + section.footer.paragraphs:
+        update_date(paragraph)
+
+for paragraph in doc.paragraphs:
+    if paragraph.text.startswith("El proyecto amplía el asistente de la Mesa de Control"):
+        paragraph.text = (
+            "El proyecto amplía el asistente de la Mesa de Control de LogiRuta con memoria persistente, "
+            "planificación de acciones y registro simulado de gestiones. Entre el 3 y el 6 de noviembre "
+            "se verificaron en Streamlit RAG y generación real, seguimiento contextual, cuatro escenarios "
+            "operativos y el ciclo de aprobación y registro de una gestión simulada."
+        )
+    elif paragraph.text.startswith("La evidencia adicional confirma el flujo de memoria"):
+        paragraph.text = (
+            "La evidencia adicional confirma seguimiento contextual en la misma sesión y una gestión "
+            "simulada que pasó de PENDIENTE_APROBACION a REGISTRADA tras una decisión humana. Se "
+            "ejecutaron los casos M02, M01, M07 y M04; quedan escenarios de la matriz sin probar y la "
+            "demo no modifica sistemas reales."
+        )
+    elif paragraph.text.startswith("La demostración de Streamlit se capturó"):
+        paragraph.text = (
+            "La demostración se capturó en una sesión aislada. Además del control de código inexistente, "
+            "se probaron el seguimiento M02 sin repetir el código, la entrega tardía M01 y el paquete "
+            "no localizable M07. En M04, un atraso de cinco días produjo una compensación pendiente "
+            "de aprobación; la gestión simulada #3 quedó REGISTRADA tras la decisión humana."
+        )
+    elif paragraph.text.startswith("La generación real se verificó en una consulta"):
+        paragraph.text = (
+            "Las latencias de 2,77–47,42 s para recuperación y 4,14–14,13 s para generación son "
+            "observaciones de estas consultas, no una medición de rendimiento general."
+        )
+    elif paragraph.text.startswith("La recuperación devolvió ocho fragmentos"):
+        paragraph.text = (
+            "En la consulta M02 inicial Groq generó la respuesta tras ocho fragmentos RAG; las fuentes "
+            "visibles respaldaron el diagnóstico. Los resultados ampliados y sus límites constan en "
+            "evidencias/eva2/EJECUCION_STREAMLIT_ADICIONAL.md."
+        )
+    elif paragraph.text.startswith("Eder Valdivia: describir"):
+        paragraph.text = (
+            "Eder Valdivia — ejemplo para adaptar, no entregar sin reescribir: En la EVA2 participé en "
+            "[tarea que realmente realizaste]. Al revisar [escenario que ejecutaste], entendí mejor cómo "
+            "se relacionan los hechos de tracking y las fuentes RAG. Mi reflexión personal es [aprendizaje propio]."
+        )
+    elif paragraph.text.startswith("Camilo Romero: describir"):
+        paragraph.text = (
+            "Camilo Romero — ejemplo para adaptar, no entregar sin reescribir: Me encargué de [tarea que "
+            "realmente realizaste]. La demostración de [escenario que ejecutaste] me ayudó a comprender "
+            "[aprendizaje personal sobre memoria, planificación o aprobación]. Para mejorar el sistema, "
+            "propondría [mejora propia]."
+        )
+
 def page_heading(text):
     p = doc.add_paragraph()
     p.paragraph_format.page_break_before = True
@@ -40,7 +124,7 @@ def page_heading(text):
     r.bold = True
     r.font.name = "Arial"
     r.font.size = Pt(15)
-    r.font.color.rgb = RGBColor(17, 38, 63)
+    r.font.color.rgb = RGBColor(0, 0, 0)
 
 def add_capture(filename, caption):
     p = doc.add_paragraph()
@@ -67,15 +151,20 @@ for p in list(doc.paragraphs):
         node.getparent().remove(node)
         break
 
-for index, (filename, caption) in enumerate([
+anexo = [
     ("EV2-01-generacion-groq.png", "Figura A1. Respuesta diagnóstica generada por Groq con referencias a fuentes."),
     ("EV2-02-fuentes-rag.png", "Figura A2. Fragmentos recuperados mediante RAG híbrido."),
     ("EV2-03-hechos-tracking.png", "Figura A3. Hechos verificados desde el tracking simulado."),
     ("EV2-04-codigo-inexistente.png", "Figura A4. Código inexistente; el flujo no invoca al LLM."),
-]):
-    page_heading(f"Anexo A  Capturas de Streamlit  {index + 1} de 4")
+    ("EV2-06-memoria-seguimiento.png", "Figura A5. Seguimiento sin repetir el código; la memoria conserva el envío activo y los turnos."),
+    ("EV2-09-entrega-completada-plan.png", "Figura A6. Envío entregado con un día de atraso; el plan no ofrece compensación económica."),
+    ("EV2-10-paquete-no-localizable-plan.png", "Figura A7. Caso M07: incidente urgente sujeto a aprobación humana."),
+    ("EV2-14-gestion-aprobada-registrada.png", "Figura A8. La interfaz confirma que la gestión #3 fue aprobada y registrada."),
+]
+for index, (filename, caption) in enumerate(anexo):
+    page_heading(f"Anexo A  Capturas de Streamlit  {index + 1} de {len(anexo)}")
     add_capture(filename, caption)
 
-doc.core_properties.comments = "Cuerpo técnico de cinco páginas más anexo de evidencias Streamlit."
+doc.core_properties.comments = "Cuerpo técnico de cinco páginas más anexo de ocho capturas de Streamlit. Las reflexiones contienen ejemplos orientativos para personalizar."
 doc.save(DOCX)
 print(DOCX)

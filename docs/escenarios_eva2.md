@@ -1,10 +1,10 @@
 # Matriz de escenarios EVA2 — LogiRuta
 
-**Estado:** diseñados; los 12 escenarios aún no se han ejecutado en la interfaz. Hay verificaciones técnicas parciales en [`VERIFICACION_TECNICA.md`](../evidencias/eva2/VERIFICACION_TECNICA.md).  
-**Fecha de diseño:** 27 de octubre de 2026.  
+**Estado:** 5 escenarios tienen evidencia parcial o completa de ejecución en Streamlit; los demás siguen pendientes. Los resultados y límites observados están en [`EJECUCION_STREAMLIT_ADICIONAL.md`](../evidencias/eva2/EJECUCION_STREAMLIT_ADICIONAL.md) y las verificaciones técnicas parciales en [`VERIFICACION_TECNICA.md`](../evidencias/eva2/VERIFICACION_TECNICA.md).
+**Fecha de diseño:** 27 de octubre de 2026. **Última actualización:** 6 de noviembre de 2026.
 **Propósito:** planificar la demostración y reunir evidencia de memoria, planner y trazabilidad sin mezclar estos resultados con la línea base de EVA1.
 
-> Los casos de abajo son criterios esperados, no resultados observados. La evidencia de EVA1 conserva su propio resumen de 7 escenarios y 34/34 verificaciones; no cuenta como ejecución de EVA2. Las verificaciones parciales de componentes están delimitadas en el documento enlazado y tampoco certifican la demo completa.
+> Los resultados que aparecen en la siguiente sección sí fueron observados en EVA2; el resto de casos de la matriz sigue siendo un criterio esperado, no un resultado. La evidencia de EVA1 conserva su propio resumen de 7 escenarios y 34/34 verificaciones y no cuenta como ejecución de EVA2.
 
 ## Requisitos previos para la ejecución
 
@@ -31,6 +31,18 @@
 | EV2-10 | Paquete no localizable | Consultar `LR-2026-009011` | Abre incidente simulado y escala a Operaciones; propone reposición o reembolso con el retailer más reembolso del despacho, sujeto a aprobación de Gerencia Comercial | Captura del motivo M07, acción, aprobación y referencias CAT-OPS-007 / POL-COM-003 |
 | EV2-11 | Tercer intento fallido | Consultar `LR-2026-006152` | Propone devolución al origen y notificación al retailer el mismo día hábil; no propone compensación por causa M02 | Captura del número de intentos, estado del plan y referencias SOP-OPS-014 / CAT-OPS-007 |
 | EV2-12 | Separación de consultas | Después de EV2-01, preguntar “¿Qué significa RRF?” sin código de envío | Resuelve la pregunta como consulta documental; no agrega el envío activo ni turnos previos no relacionados al prompt | Captura del flujo de políticas, consultas RAG y prompt enviado |
+
+## Ejecución registrada al 6 de noviembre de 2026
+
+| ID | Estado | Resultado observado | Evidencia |
+|---|---|---|---|
+| EV2-01 | Ejecutado en la misma sesión | Tras consultar `LR-2026-005271`, el seguimiento sin código heredó M02, conservó el envío activo y respondió que quedaba un intento de tres. La reapertura en otra conexión sigue pendiente. | `EV2-05`, `EV2-06` y `EV2-07` en [`capturas`](../evidencias/eva2/capturas/). |
+| EV2-03 | Ejecutado | `LR-2026-999999` no produjo diagnóstico: cero fragmentos y cero llamada al LLM. | `EV2-04` en [`capturas`](../evidencias/eva2/capturas/). |
+| EV2-04 | Ejecutado | `LR-2026-008477`, entregado un día tarde: disculpa y comunicación; sin compensación económica ni reprogramación. | `EV2-08` y `EV2-09` en [`capturas`](../evidencias/eva2/capturas/). |
+| EV2-06 | Ejecutado | `LR-2026-007362`, M04 con cinco días: reembolso de despacho y cupón pendientes de aprobación del Jefe de Operaciones. La gestión #3 pasó a `REGISTRADA` al aprobarla desde la interfaz. | `EV2-12` a `EV2-15` en [`capturas`](../evidencias/eva2/capturas/); estado corroborado en SQLite. |
+| EV2-10 | Ejecutado | `LR-2026-009011`, M07: incidente urgente y escalamiento a Operaciones; compensación propuesta pendiente de aprobación de Gerencia Comercial. | `EV2-10` y `EV2-11` en [`capturas`](../evidencias/eva2/capturas/). |
+
+El flujo de registro y aprobación también se probó en la interfaz sobre EV2-06. No se marca EV2-08 completo: falta volver a consultar después de aprobar y demostrar el seguimiento sin duplicar, y la prueba se hizo con un envío distinto al EV2-05 de esa fila.
 
 ## Protocolo de registro
 
